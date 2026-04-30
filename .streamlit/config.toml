@@ -1,0 +1,26 @@
+[server]
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
+
+[runner]
+magicEnabled = true
+
+[logger]
+level = "info"
+
+[theme]
+base = "dark"
+primaryColor = "#3b82f6"
+backgroundColor = "#020617"
+secondaryBackgroundColor = "#0f172a"
+textColor = "#f8fafc"
+font = "sans serif"
+
+[global]
+developmentMode = false
+
+[client]
+showErrorDetails = true
+toolbarMode = "auto"

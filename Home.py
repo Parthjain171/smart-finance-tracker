@@ -1101,6 +1101,14 @@ def main():
                     st.rerun()
                 except Exception as e:
                     st.error(f"🚨 DEBUG ERROR inside process_user_input: {str(e)}")
+                    try:
+                        import google.generativeai as genai
+                        models = []
+                        for m in genai.list_models():
+                            models.append(m.name)
+                        st.error(f"🛠️ AVAILABLE MODELS FOR YOUR API KEY: {', '.join(models)}")
+                    except Exception as list_e:
+                        st.error(f"Could not list models: {str(list_e)}")
                     st.stop()
             
         # Show transaction form if we have extracted info

@@ -30,7 +30,8 @@ def get_gemini_model() -> Any:
     """Cache Gemini AI configuration"""
     try:
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'), transport='rest') # type: ignore
-        model: Any = genai.GenerativeModel('gemini-1.5-flash') # type: ignore
+        # Using gemini-pro as it's the most stable and widely available model for text tasks
+        model: Any = genai.GenerativeModel('gemini-pro') # type: ignore
         log.info("🤖 Gemini AI configured successfully with REST transport")
         return model
     except Exception as e:

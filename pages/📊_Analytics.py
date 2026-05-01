@@ -24,7 +24,12 @@ def get_google_sheets_service():
     try:
         import json
         if "GOOGLE_SHEETS_CREDENTIALS_JSON" in st.secrets:
-            creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS_JSON"])
+            raw = st.secrets["GOOGLE_SHEETS_CREDENTIALS_JSON"]
+            # Streamlit may return AttrDict (already parsed) or a raw JSON string
+            if isinstance(raw, str):
+                creds_dict = json.loads(raw)
+            else:
+                creds_dict = dict(raw)  # Convert AttrDict to plain dict
             creds = service_account.Credentials.from_service_account_info(
                 creds_dict,
                 scopes=['https://www.googleapis.com/auth/spreadsheets']

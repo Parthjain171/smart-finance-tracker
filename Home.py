@@ -1100,6 +1100,8 @@ def main():
             
         # Show transaction form if we have extracted info
         if st.session_state.current_transaction:
+            st.info("Debug AI Output:")
+            st.json(st.session_state.current_transaction)
             show_transaction_form()
     
     except Exception as e:

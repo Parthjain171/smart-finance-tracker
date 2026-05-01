@@ -394,7 +394,7 @@ def classify_transaction_type(text: str, model: Any) -> dict[str, Any]:
         for line in lines:
             if ':' in line:
                 key, value = line.split(':', 1)
-                result[key.strip()] = value.strip()
+                result[key.strip().lower()] = value.strip()
         
         # Double-check classification for pending received
         text_lower = text.lower()
@@ -654,7 +654,7 @@ def process_user_input(text: str) -> dict[str, Any]:
         for line in lines:
             if ':' in line:
                 key, value = line.split(':', 1)
-                extracted_info[key.strip()] = value.strip().replace('"', '').replace("'", "")
+                extracted_info[key.strip().lower()] = value.strip().replace('"', '').replace("'", "")
         
         log.debug(f"Extracted transaction details: {extracted_info}")
         

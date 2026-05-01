@@ -29,9 +29,9 @@ apply_premium_theme()
 def get_gemini_model() -> Any:
     """Cache Gemini AI configuration"""
     try:
-        genai.configure(api_key=os.getenv('GEMINI_API_KEY')) # type: ignore
+        genai.configure(api_key=os.getenv('GEMINI_API_KEY'), transport='rest') # type: ignore
         model: Any = genai.GenerativeModel('gemini-1.5-flash') # type: ignore
-        log.info("🤖 Gemini AI configured successfully")
+        log.info("🤖 Gemini AI configured successfully with REST transport")
         return model
     except Exception as e:
         log.error(f"❌ Failed to configure Gemini AI: {str(e)}")

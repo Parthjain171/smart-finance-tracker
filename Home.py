@@ -1094,9 +1094,13 @@ def main():
             
             # Process user input only if we don't have a current transaction
             if not st.session_state.current_transaction:
-                extracted_info = process_user_input(prompt)
-                st.session_state.current_transaction = extracted_info
-                st.rerun()
+                try:
+                    extracted_info = process_user_input(prompt)
+                    st.session_state.current_transaction = extracted_info
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"🚨 DEBUG ERROR inside process_user_input: {str(e)}")
+                    st.stop()
             
         # Show transaction form if we have extracted info
         if st.session_state.current_transaction:

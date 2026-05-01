@@ -69,7 +69,9 @@ def get_transactions_data():
             return pd.DataFrame(columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
         
         log.info(f" Retrieved {len(values)-1} transaction records")
-        return pd.DataFrame(values[1:], columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
+        expected_cols = 6
+        padded_values = [row + [''] * (expected_cols - len(row)) for row in values[1:]]
+        return pd.DataFrame(padded_values, columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
     except Exception as e:
         log.error(f"❌ Failed to fetch transactions data: {str(e)}")
         raise
@@ -95,7 +97,9 @@ def get_pending_transactions() -> pd.DataFrame:
         log.debug(f"Raw data from sheet: {values[:5]}")  # Log first few rows
         
         # Convert to DataFrame
-        df = pd.DataFrame(values[1:], columns=['Date', 'Amount', 'Type', 'Category', 'Description', 'Due Date', 'Status'])
+        expected_cols = 7
+        padded_values = [row + [''] * (expected_cols - len(row)) for row in values[1:]]
+        df = pd.DataFrame(padded_values, columns=['Date', 'Amount', 'Type', 'Category', 'Description', 'Due Date', 'Status'])
         log.debug(f"Initial DataFrame shape: {df.shape}")
         
         # Log unique values in Status column

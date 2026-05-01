@@ -313,7 +313,10 @@ def get_transactions_data() -> pd.DataFrame:
             return pd.DataFrame(columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
         
         log.info(f"📈 Retrieved {len(values)-1} transaction records")
-        return pd.DataFrame(values[1:], columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
+        # Pad rows to ensure they have 6 columns
+        expected_cols = 6
+        padded_values = [row + [''] * (expected_cols - len(row)) for row in values[1:]]
+        return pd.DataFrame(padded_values, columns=['Date', 'Amount', 'Type', 'Category', 'Subcategory', 'Description'])
     except Exception as e:
         log.error(f"❌ Failed to fetch transactions data: {str(e)}")
         raise

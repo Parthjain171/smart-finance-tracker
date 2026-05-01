@@ -30,8 +30,8 @@ def get_gemini_model() -> Any:
     """Cache Gemini AI configuration"""
     try:
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'), transport='rest') # type: ignore
-        # Using gemini-1.5-flash-latest as it is the most current and universally supported endpoint
-        model: Any = genai.GenerativeModel('gemini-1.5-flash-latest') # type: ignore
+        # Using gemini-flash-latest as it is the universally supported endpoint in 2026
+        model: Any = genai.GenerativeModel('gemini-flash-latest') # type: ignore
         log.info("🤖 Gemini AI configured successfully with REST transport")
         return model
     except Exception as e:
@@ -1095,26 +1095,12 @@ def main():
             
             # Process user input only if we don't have a current transaction
             if not st.session_state.current_transaction:
-                try:
-                    extracted_info = process_user_input(prompt)
-                    st.session_state.current_transaction = extracted_info
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"🚨 DEBUG ERROR inside process_user_input: {str(e)}")
-                    try:
-                        import google.generativeai as genai
-                        models = []
-                        for m in genai.list_models():
-                            models.append(m.name)
-                        st.error(f"🛠️ AVAILABLE MODELS FOR YOUR API KEY: {', '.join(models)}")
-                    except Exception as list_e:
-                        st.error(f"Could not list models: {str(list_e)}")
-                    st.stop()
+                extracted_info = process_user_input(prompt)
+                st.session_state.current_transaction = extracted_info
+                st.rerun()
             
         # Show transaction form if we have extracted info
         if st.session_state.current_transaction:
-            st.info("Debug AI Output:")
-            st.json(st.session_state.current_transaction)
             show_transaction_form()
     
     except Exception as e:

@@ -22,10 +22,18 @@ load_dotenv()
 def get_google_sheets_service():
     """Cache Google Sheets credentials and service"""
     try:
-        creds = service_account.Credentials.from_service_account_file(
-            os.getenv('GOOGLE_SHEETS_CREDENTIALS'),
-            scopes=['https://www.googleapis.com/auth/spreadsheets']
-        )
+        import json
+        if "GOOGLE_SHEETS_CREDENTIALS_JSON" in st.secrets:
+            creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS_JSON"])
+            creds = service_account.Credentials.from_service_account_info(
+                creds_dict,
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+        else:
+            creds = service_account.Credentials.from_service_account_file(
+                os.getenv('GOOGLE_SHEETS_CREDENTIALS'),
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
         service = build('sheets', 'v4', credentials=creds)
         return service
     except Exception as e:
@@ -35,10 +43,11 @@ def get_google_sheets_service():
 # Initialize service and sheet ID
 try:
     service = get_google_sheets_service()
-    SHEET_ID = os.getenv('GOOGLE_SHEET_ID')
-except Exception:
-    st.error("Failed to connect to Google Sheets. Please check your credentials.")
-    sys.exit(1)
+    SHEET_ID = st.secrets.get('GOOGLE_SHEET_ID', os.getenv('GOOGLE_SHEET_ID'))
+except Exception as e:
+    st.error(f"❌ Failed to connect to Google Sheets: `{e}`")
+    st.info("💡 Make sure your secrets are set in Streamlit Cloud under **Settings → Secrets**.")
+    st.stop()
 
 @st.cache_data(ttl=300)  # Cache for 5 minutes
 def get_transactions_data():

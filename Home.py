@@ -304,7 +304,7 @@ def get_transactions_data() -> pd.DataFrame:
         log.debug("Fetching transactions data from Google Sheets")
         result: Any = service.spreadsheets().values().get(
             spreadsheetId=SHEET_ID,
-            range='Expenses!A1:F'
+            range='Expenses!A:F'
         ).execute()
         
         values: list[list[str]] = result.get('values', [])
@@ -544,6 +544,7 @@ def handle_received_pending_transaction(amount: float, description: str) -> tupl
         )
         
         if success:
+            get_transactions_data.clear()  # Bust cache so new record shows immediately
             log.info("✨ Successfully processed received pending transaction")
         else:
             log.error("❌ Failed to create Income transaction")
@@ -932,6 +933,7 @@ def show_transaction_form():
                         )
                     
                     if success:
+                        get_transactions_data.clear()  # Bust cache so new record shows immediately
                         show_success_message(
                             transaction_date.strftime('%Y-%m-%d'),  # Convert to string
                             subcategory if 'subcategory' in locals() else None
@@ -1064,7 +1066,13 @@ def main():
             st.session_state.sheets_verified = True
         
         st.title("💰 Smart Finance Tracker")
-        st.markdown(f"📊 [View Google Sheet]({get_sheet_url()})")
+        col_title, col_refresh = st.columns([5, 1])
+        with col_title:
+            st.markdown(f"📊 [View Google Sheet]({get_sheet_url()})")
+        with col_refresh:
+            if st.button("🔄 Refresh", help="Force reload data from Google Sheets"):
+                get_transactions_data.clear()
+                st.rerun()
         st.divider()
         
         init_session_state()

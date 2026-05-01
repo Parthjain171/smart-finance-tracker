@@ -60,7 +60,7 @@ def get_transactions_data():
         log.debug("Fetching transactions data from Google Sheets")
         result = service.spreadsheets().values().get(
             spreadsheetId=SHEET_ID,
-            range='Expenses!A1:F'
+            range='Expenses!A:F'
         ).execute()
         
         values = result.get('values', [])
@@ -84,7 +84,7 @@ def get_pending_transactions() -> pd.DataFrame:
         log.debug("Fetching pending transactions data")
         result = service.spreadsheets().values().get(
             spreadsheetId=SHEET_ID,
-            range='Pending!A1:G'  # Include status column
+            range='Pending!A:G'  # Include status column
         ).execute()
         
         values = result.get('values', [])
